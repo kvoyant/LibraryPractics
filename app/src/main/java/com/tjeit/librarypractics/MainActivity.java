@@ -37,34 +37,28 @@ public class MainActivity extends BaseActivity {
                 PermissionListener permissionlistener = new PermissionListener() {
                     @Override
                     public void onPermissionGranted() {
-//                        Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(MainActivity.this, "권한 승인", Toast.LENGTH_SHORT).show();
-                    }
+                        Uri uri = Uri.parse(String.format("tel:%s", act.phoneNumberTxt.getText().toString())); // 띄어쓰기 하면 앱이 죽음. 파싱 실패
+                        Intent intent = new Intent(Intent.ACTION_CALL, uri);
+                        startActivity(intent);                    }
 
                     @Override
                     public void onPermissionDenied(List<String> deniedPermissions) {
-//                        Toast.makeText(MainActivity.this, "Permission Denied\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
-                        Toast.makeText(MainActivity.this, "권한 불가\n" + deniedPermissions.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "전화 권한이 거부되어 통화에 실패했습니다.", Toast.LENGTH_SHORT).show();
                     }
                 };
 
                 TedPermission.with(mContext)
                         .setPermissionListener(permissionlistener)
-//                        .setDeniedMessage("If you reject permission,you can not use this service\n\nPlease turn on permissions at [Setting] > [Permission]")
-                        .setDeniedMessage("전화 권한을 거부하면 통화가 불가합니다.\n\nPlease turn on permissions at [Setting] > [Permission]")
-//                        .setPermissions(Manifest.permission.READ_CONTACTS, Manifest.permission.ACCESS_FINE_LOCATION)
+                        .setDeniedMessage("전화 권한을 거부하면 통화가 불가합니다. [설정]에서 활성화해 주세요.")
                         .setPermissions(Manifest.permission.CALL_PHONE)
                         .check();
-
-                Uri uri = Uri.parse(String.format("tel:%s", act.phoneNumberTxt.getText().toString()));
-                Intent intent = new Intent(Intent.ACTION_CALL, uri);
-                startActivity(intent);
             }
         });
     }
 
     @Override
     public void setValues() {
+        setTitle("라이브러리 연습");
         //웹상의 피자헛 이미지를 이미지뷰 띄우기.
         Glide.with(mContext).load("https://mblogthumb-phinf.pstatic.net/20141124_182/howtomarry_1416806028308979cg_PNG/Pizza_Hut_logo.svg.png?type=w2")
         .into(act.pizzaLogoImgView);
